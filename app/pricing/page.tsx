@@ -1,4 +1,8 @@
+import { authOptions } from '@/auth';
+import CheckoutBtn from '@/components/pricing/CheckoutBtn';
+import SignInBtn from '@/components/pricing/SignInBtn';
 import { CheckIcon } from '@heroicons/react/20/solid'
+import { getServerSession } from 'next-auth';
 
 const tiers = [
   {
@@ -35,7 +39,10 @@ const tiers = [
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
-export default function PricingPage() {
+export default async function PricingPage() {
+
+  const session = await getServerSession(authOptions);
+
   return (
     <div className="relative isolate px-6 py-24 sm:py-32 lg:px-8">
     <div className="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl" aria-hidden="true">
@@ -105,19 +112,24 @@ export default function PricingPage() {
           </li>
         ))}
       </ul>
-     {tier.id === 'pro' ?  <a
-        href={tier.href}
-        aria-describedby={tier.id}
+      {
+        !session?.user ? <SignInBtn         
         className={classNames(
-          'mt-8 block rounded-md px-3.5 py-2.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+          'w-full mt-8 block rounded-md px-3.5 py-2.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
           tier.featured
             ? 'bg-indigo-600 text-white shadow hover:bg-indigo-500'
-            : 'text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 dark:text-white dark:ring-indigo-600',
+            : 'bg-transparent text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 hover:bg-indigo-700 hover:text-white dark:text-white dark:ring-indigo-600',
           'sm:mt-10',
-        )}
-      >
-        Manage billing
-      </a> : <a
+        )} 
+        text='Get Started'/> : tier.id === 'pro' ?  <CheckoutBtn
+        className={classNames(
+          'w-full mt-8 block rounded-md px-3.5 py-2.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+          tier.featured
+            ? 'bg-indigo-600 text-white shadow hover:bg-indigo-500'
+            : 'bg-transparent text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 hover:bg-indigo-700 hover:text-white dark:text-white dark:ring-indigo-600',
+          'sm:mt-10',
+        )} 
+      /> : <a
         href={tier.href}
         aria-describedby={tier.id}
         className={classNames(
