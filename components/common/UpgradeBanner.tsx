@@ -5,7 +5,6 @@ import { useSubscriptionStore } from "@/store/store";
 export default function UpgradeBanner() {
   const subscription = useSubscriptionStore((state) => state.subscription);
   const isActive = subscription?.status === "active";
-  console.log(subscription);
 
   if (subscription === undefined || isActive) return null;
 
