@@ -13,6 +13,7 @@ import { Session } from "next-auth";
 import { Button } from "@/components/ui/button";
 import { signIn, signOut } from "next-auth/react";
 import { useSubscriptionStore } from "@/store/store";
+import { useRouter } from "next/navigation";
 
 interface UserButtonProps {
   session : Session | null
@@ -21,7 +22,7 @@ interface UserButtonProps {
 export default function UserButton({session}: UserButtonProps) {
   const subscription = useSubscriptionStore((state) => state.subscription);
   const isActive = subscription?.status === "active";
-
+  const router = useRouter();
 
   if(!session) return (
     <Button variant="outline" onClick={() => signIn()}>
@@ -34,10 +35,9 @@ export default function UserButton({session}: UserButtonProps) {
       <DropdownMenuTrigger><UserAvatar name={session.user?.name || ''} image={session.user?.image || ''}/></DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>{session.user?.name}</DropdownMenuLabel>
-
-        <DropdownMenuLabel>{isActive && <p className="text-indigo-400 font-extrabold">★ Pro Tier</p> }</DropdownMenuLabel>
+        {isActive && <DropdownMenuLabel><p className="text-indigo-400 font-extrabold">★ Pro Tier</p></DropdownMenuLabel>}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => {}}>Manage Billing</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push('/pricing')}>Manage Billing</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()}>Sign Out</DropdownMenuItem>
       </DropdownMenuContent>
