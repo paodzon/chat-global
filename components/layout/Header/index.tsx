@@ -7,6 +7,7 @@ import { MessageSquareIcon } from 'lucide-react'
 import Link from 'next/link'
 import CreateChatButton from './CreateChatButton'
 import UpgradeBanner from '@/components/common/UpgradeBanner'
+import LanguageSelect from './LanguageSelect'
 
 export default async function Header() {
   const session = await getServerSession(authOptions);
@@ -21,7 +22,7 @@ export default async function Header() {
         </div>
         <div className='flex gap-4 items-center'>
           {/* Landuage Select */}
-
+          <LanguageSelect/>
           {/* Session */}
           {session ? <>
             <Link href={'/chat'} prefetch={false}>

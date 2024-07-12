@@ -1,4 +1,4 @@
-import ChatList from '@/components/chat/ChatList';
+import ChatList from '@/components/chats/ChatList';
 import React from 'react'
 
 interface ChatsPageProps{
