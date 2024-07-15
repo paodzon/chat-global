@@ -21,7 +21,7 @@ export default function UserAvatar({name, image, className} : UserAvatarProps) {
         />
       )
       }
-      <AvatarFallback className="dark:bg-white dark:text-black text-lg">{name.split('')[0].toUpperCase()}</AvatarFallback>
+      <AvatarFallback className="dark:bg-white dark:text-black text-lg">{name.split('')[0]?.toUpperCase()}</AvatarFallback>
     </Avatar>
   )
 }

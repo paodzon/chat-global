@@ -34,7 +34,6 @@ export function ShareLink({chatId, isOpen, setIsOpen}: ShareLinkProps) {
   const copyToClipboard = async() => {
     try{
       await navigator.clipboard.writeText(linkToChat);
-      console.log('Text copied to clipboard');
 
       toast({
         title: "Copied Successfully",

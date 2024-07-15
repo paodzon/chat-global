@@ -53,7 +53,7 @@ export default function ChatMessages({
 
       {messages?.map((message) => {
         const isSender = message.user.id === session?.user.id;
-        console.log(message)
+
         return (
           <div key={message.id} className="flex my-2 items-end">
             <div
