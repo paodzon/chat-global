@@ -39,7 +39,7 @@ export default function UserButton({session}: UserButtonProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push('/pricing')}>Manage Billing</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut({'callbackUrl': '/'})}>Sign Out</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signOut()}>Sign Out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

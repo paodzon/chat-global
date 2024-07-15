@@ -1,5 +1,4 @@
-
-import { NextAuthOptions } from "next-auth"
+import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { adminAuth, adminDb } from "./firebase-admin";
@@ -7,24 +6,31 @@ import { FirestoreAdapter } from "@next-auth/firebase-adapter";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebase";
 
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {},
       async authorize(credentials): Promise<any> {
-        return await signInWithEmailAndPassword(auth, (credentials as any).email || '', (credentials as any).password || '').then((userCredential) => {
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            (credentials as any).email || '',
+            (credentials as any).password || ''
+          );
           if (userCredential.user) {
             return {
-              id: userCredential.user?.uid,
-              email: userCredential.user?.email,
-              name: userCredential.user?.email,
+              id: userCredential.user.uid,
+              email: userCredential.user.email,
+              name: userCredential.user.email,
               image: ''
-            }
+            };
           }
           return null;
-        }).catch((error) => console.error(error));
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
       }
     }),
     GoogleProvider({
@@ -34,27 +40,29 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
-      return baseUrl
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
     async signIn({ user, account, profile, email, credentials }) {
-      return true
+      return true;
     },
-    session: async ({ session, token }) => {
+    async session({ session, token }) {
       if (session?.user) {
         if (token.sub) {
           session.user.id = token.sub;
 
-          const firebaseToken = await adminAuth.createCustomToken(token.sub);
-          session.firebaseToken = firebaseToken;
+          try {
+            const firebaseToken = await adminAuth.createCustomToken(token.sub);
+            session.firebaseToken = firebaseToken;
+          } catch (error) {
+            console.error("Error creating custom token:", error);
+          }
         }
       }
       return session;
     },
-    jwt: async ({ user, token }) => {
+    async jwt({ user, token }) {
       if (user) {
         token.sub = user.id;
       }
@@ -62,11 +70,12 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: {
-    strategy: 'jwt'
+    strategy: "jwt"
   },
   adapter: FirestoreAdapter(adminDb),
-  debug: true,
   pages: {
     signIn: '/signin'
   }
-} satisfies NextAuthOptions
+} satisfies NextAuthOptions;
+
+export default authOptions;

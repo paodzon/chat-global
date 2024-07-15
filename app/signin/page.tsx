@@ -98,7 +98,7 @@ export default function SignIn() {
 
             <div className="mt-6">
               <div
-                onClick={() => signIn('google', { callbackUrl: '/' })}
+                onClick={() => signIn('google')}
                 className="cursor-pointer flex w-full items-center justify-center gap-3 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus-visible:ring-transparent"
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
