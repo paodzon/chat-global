@@ -19,12 +19,31 @@ export const authOptions: NextAuthOptions = {
             (credentials as any).password || ''
           );
           if (userCredential.user) {
-            return {
+            const user = {
               id: userCredential.user.uid,
               email: userCredential.user.email,
               name: userCredential.user.email,
               image: ''
             };
+
+            // Add user to Firestore
+            const userDocRef = adminDb.collection('users').doc(user.id);
+            await userDocRef.set({
+              email: user.email,
+              name: user.name,
+              createdAt: new Date(),
+            }, { merge: true });
+
+            // Add account to Firestore
+            const accountDocRef = adminDb.collection('accounts').doc(user.id);
+            await accountDocRef.set({
+              provider: 'credentials',
+              type: 'credentials',
+              providerAccountId: user.id,
+              createdAt: new Date(),
+            }, { merge: true });
+
+            return user;
           }
           return null;
         } catch (error) {

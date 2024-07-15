@@ -89,7 +89,7 @@ export default function InviteUser({ chatId }: InviteUserProps) {
       return;
     }
     const querySnapshot = await getDocs(getUserByEmailRef(values.email));
-
+    console.log(querySnapshot)
     if (querySnapshot.empty) {
       toast({
         title: "User not found",

@@ -51,43 +51,47 @@ export default function ChatInput({ chatId }: ChatInput) {
 
     if (!session?.user) return;
 
-    const messages = (await getDocs(limitedMessagesRef(chatId))).docs.map(
-      (doc) => doc.data()
-    ).length;
-
-    const isPro = subscription?.status === "active";
-
-    if (!isPro && messages >= 20) {
-      toast({
-        title: "Free plan limit exceeded",
-        description:
-          "You've exceeded the FREE plan limit of 20 messages per chat. Upgrade to PRO for unlimited chat messages!",
-        variant: "destructive",
-        action: (
-          <ToastAction
-            altText="Upgrade"
-            onClick={() => router.push("/pricing")}
-          >
-            Upgrade to PRO
-          </ToastAction>
-        ),
+    try{
+      const messages = (await getDocs(limitedMessagesRef(chatId))).docs.map(
+        (doc) => doc.data()
+      ).length;
+  
+      const isPro = subscription?.status === "active";
+  
+      if (!isPro && messages >= 20) {
+        toast({
+          title: "Free plan limit exceeded",
+          description:
+            "You've exceeded the FREE plan limit of 20 messages per chat. Upgrade to PRO for unlimited chat messages!",
+          variant: "destructive",
+          action: (
+            <ToastAction
+              altText="Upgrade"
+              onClick={() => router.push("/pricing")}
+            >
+              Upgrade to PRO
+            </ToastAction>
+          ),
+        });
+        return; 
+      }
+  
+      const userToStore: User = {
+        id: session?.user.id!,
+        name: session.user.name!,
+        email: session.user.email!,
+        image: session.user.image!,
+      };
+  
+      addDoc(messagesRef(chatId), {
+        input: inputCopy,
+        timestamp: serverTimestamp(),
+        user: userToStore,
       });
-      return; 
+  
+    }catch(err){
+      console.log(err);
     }
-
-    const userToStore: User = {
-      id: session?.user.id!,
-      name: session.user.name!,
-      email: session.user.email!,
-      image: session.user.image!,
-    };
-
-    addDoc(messagesRef(chatId), {
-      input: inputCopy,
-      timestamp: serverTimestamp(),
-      user: userToStore,
-    });
-
 
   };
 
