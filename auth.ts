@@ -40,6 +40,9 @@ export const authOptions: NextAuthOptions = {
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
     },
+    async signIn({ user, account, profile, email, credentials }) {
+      return true
+    },
     session: async ({ session, token }) => {
       if (session?.user) {
         if (token.sub) {
