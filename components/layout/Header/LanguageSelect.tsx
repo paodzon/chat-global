@@ -51,7 +51,7 @@ export default function LanguageSelect() {
                   </SelectItem>
                 ))}
                 {getNotSupportedLanguages(isPro).map((language) => (
-                  <Link href={"/register"} key={language} prefetch={false}>
+                  <Link href={"/pricing"} key={language} prefetch={false}>
                     <SelectItem
                       key={language}
                       value={language}

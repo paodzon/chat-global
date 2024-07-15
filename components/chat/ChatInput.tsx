@@ -72,6 +72,7 @@ export default function ChatInput({ chatId }: ChatInput) {
           </ToastAction>
         ),
       });
+      return; 
     }
 
     const userToStore: User = {
@@ -104,7 +105,7 @@ export default function ChatInput({ chatId }: ChatInput) {
               <FormItem className="flex-1">
                 <FormControl>
                   <Input
-                    className="border-none bg-transparent dark: placeholder:text-white/70"
+                    className="border-none bg-transparent dark:placeholder:text-white/70"
                     placeholder="Enter message in ANY language..."
                     {...field}
                   />

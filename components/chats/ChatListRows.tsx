@@ -22,7 +22,7 @@ export default function ChatListRows({ initialChats }: ChatListRowsProps) {
     return (<div className="flex flex-col justify-center items-center pt-40 space-y-2">
       <MessageSquare className="h-10 w-10" />
       <h1 className="text-5xl font-extralight">Welcome!</h1>
-      <h2 className="pb-10">Let's get you started by creating your first chat!</h2>
+      <h2 className="pb-10">Let&apos;s get you started by creating your first chat!</h2>
       <CreateChatButton isLarge />
     </div>)
 
