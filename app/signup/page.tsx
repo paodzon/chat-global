@@ -4,7 +4,9 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
+import { adminDb } from "@/firebase-admin";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -13,16 +15,33 @@ export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
-  const signUp = (event: React.FormEvent<HTMLFormElement>) => {
+  const signUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent the default form submission behavior
     if (password === confirmPassword) {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          router.push('/signin');
-        })
-        .catch((error) => {
-          setErrorMessage(error.message); // Handle any errors from Firebase
-        });
+
+      try {
+        const { user } = await createUserWithEmailAndPassword(auth, email, password);
+
+        // Add user to Firestore
+        await setDoc(doc(db, 'users', user.uid), {
+          email: user.email,
+          name: null,
+          createdAt: new Date(),
+        }, { merge: true });
+
+        // Add account to Firestore
+        await setDoc(doc(db, 'accounts', user.uid), {
+          provider: 'credentials',
+          type: 'credentials',
+          providerAccountId: user.uid,
+          createdAt: new Date(),
+        }, { merge: true });
+
+        router.push('/signin');
+      } catch (err: any) {
+        setErrorMessage(err.message);
+      }
+
     } else {
       setErrorMessage('Passwords do not match'); // Set error message for password mismatch
     }
